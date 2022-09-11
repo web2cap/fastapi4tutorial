@@ -18,6 +18,14 @@ class User(BaseModel):
     password: str
 
 
+class ShowOnlyUser(BaseModel):
+    name: str
+    email: str
+
+    class Config:
+        orm_mode = True
+
+
 class ShowUser(BaseModel):
     name: str
     email: str
@@ -28,7 +36,7 @@ class ShowUser(BaseModel):
 
 
 class ShowBlog(Blog):
-    owner: ShowUser
+    owner: ShowOnlyUser
 
     class Config:
         orm_mode = True
