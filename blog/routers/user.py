@@ -6,10 +6,13 @@ from .. import database, models, schemas
 from ..hashing import Hash
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/user",
+    tags=["Users"],
+)
 
 
-@router.post("/user", status_code=status.HTTP_201_CREATED, tags=["users"])
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create(request: schemas.User, db: Session = Depends(database.get_db)):
     hashed_password = Hash.bcrypt(password=request.password)
     blog = models.User(
@@ -23,13 +26,13 @@ def create(request: schemas.User, db: Session = Depends(database.get_db)):
     return blog
 
 
-@router.get("/user", status_code=status.HTTP_200_OK, response_model=List[schemas.ShowUser], tags=["users"])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.ShowUser])
 def get_all(db: Session = Depends(database.get_db)):
     users = db.query(models.User).all()
     return users
 
 
-@router.get("/user.{id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowUser, tags=["users"])
+@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowUser)
 def get_by_id(id: int, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:

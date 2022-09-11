@@ -9,11 +9,11 @@ from .routers import blog, user
 
 tags_metadata = [
     {
-        "name": "users",
+        "name": "Users",
         "description": "Operations with users. The **login** logic is also here.",
     },
     {
-        "name": "blogs",
+        "name": "Blogs",
         "description": "Manage items. So _fancy_ they have their own docs.",
     },
 ]
