@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from . import models
 from .database import engine
-from .routers import blog, user
+from .routers import authentication, blog, user
 
 
 tags_metadata = [
@@ -16,12 +16,17 @@ tags_metadata = [
         "name": "Blogs",
         "description": "Manage items. So _fancy_ they have their own docs.",
     },
+    {
+        "name": "Auth",
+        "description": "OAuth2 with Password (and hashing), Bearer with JWT tokens.",
+    },
 ]
 
 app = FastAPI(openapi_tags=tags_metadata)
 
 models.Base.metadata.create_all(bind=engine)
 
+app.include_router(authentication.router)
 app.include_router(blog.router)
 app.include_router(user.router)
 

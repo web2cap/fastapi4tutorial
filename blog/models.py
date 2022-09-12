@@ -13,6 +13,7 @@ class Blog(Base):
 
     owner = relationship("User", back_populates="blogs")
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -21,3 +22,4 @@ class User(Base):
     email = Column(String, unique=True)
     password = Column(String)
     blogs = relationship("Blog", back_populates="owner")
+
