@@ -24,16 +24,25 @@ def get_by_id(id: int, db: Session = Depends(database.get_db)):
 def create(
     request: schemas.Blog,
     db: Session = Depends(database.get_db),
-    get_current_user: schemas.User = Depends(oauth2.get_current_user)
+    current_user: schemas.User = Depends(oauth2.get_current_user)
 ):
-    return blog.create(request, db)
+    return blog.create(request, db, current_user)
 
 
 @router.put("/{id}", status_code=status.HTTP_202_ACCEPTED)
-def update_by_id(id: int, request: schemas.Blog, db: Session = Depends(database.get_db)):
-    return blog.update(id, request, db)
+def update_by_id(
+    id: int,
+    request: schemas.Blog,
+    db: Session = Depends(database.get_db),
+    current_user: schemas.User = Depends(oauth2.get_current_user),
+):
+    return blog.update(id, request, db, current_user)
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_by_id(id: int, db: Session = Depends(database.get_db)):
-    return blog.delete(id, db)
+def delete_by_id(
+    id: int,
+    db: Session = Depends(database.get_db),
+    current_user: schemas.User = Depends(oauth2.get_current_user),
+):
+    return blog.delete(id, db, current_user)

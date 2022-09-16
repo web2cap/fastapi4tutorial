@@ -3,8 +3,9 @@ from dotenv import load_dotenv
 import os
 
 from jose import JWTError, jwt
+from sqlalchemy.orm import Session
 
-from . import schemas
+from . import schemas, models
 
 
 load_dotenv()
@@ -24,7 +25,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def verify_token(token: str, credentials_exception):
+def verify_token(token: str, credentials_exception, db: Session):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
@@ -33,3 +34,9 @@ def verify_token(token: str, credentials_exception):
         token_data = schemas.TokenData(email=email)
     except JWTError:
         raise credentials_exception
+
+    user = db.query(models.User).filter(models.User.email==token_data.email).first()
+    if not user:
+        raise credentials_exception
+    return user
+
