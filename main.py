@@ -2,9 +2,9 @@ import uvicorn
 
 from fastapi import FastAPI
 
-from . import models
-from .database import engine
-from .routers import authentication, blog, user
+import models
+from database import engine
+from routers import authentication, blog, user
 
 
 tags_metadata = [

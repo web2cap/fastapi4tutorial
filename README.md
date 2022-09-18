@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 - Run the project:
 
-`uvicorn blog.main:app --reload `
+`uvicorn main:app --reload `
 
 ## Documentation
 

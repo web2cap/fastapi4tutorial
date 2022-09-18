@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from .. import database, schemas
-from ..repository import user
+import database
+import schemas
+from repository import user
 
 
 router = APIRouter(
@@ -19,7 +20,7 @@ def create(request: schemas.User, db: Session = Depends(database.get_db)):
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.ShowUser])
 def get_all(db: Session = Depends(database.get_db)):
-   return user.get_all(db)
+    return user.get_all(db)
 
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowUser)

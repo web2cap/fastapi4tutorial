@@ -1,7 +1,10 @@
+from typing import Dict
+
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from .. import models, schemas
+import models
+import schemas
 
 
 def get_all(db: Session):
@@ -18,7 +21,24 @@ def get_by_id(id: int, db: Session):
     return blog
 
 
+def pre_unic_field(data: Dict, db: Session):
+    for key in data:
+        print(f"key: {key}")
+        manager = getattr(models.Blog, key)
+        blogs = db.query(models.Blog).filter(manager == data[key]).first()
+        if blogs:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Blog record with {key}: {data[key]} already exists.",
+            )
+    return True
+
+
 def create(request: schemas.Blog, db: Session, current_user: models.User):
+    pre_unic_field(
+        {"title": request.title, "body": request.body},
+        db
+    )
     new_blog = models.Blog(title=request.title, body=request.body, user_id=current_user.id)
     db.add(new_blog)
     db.commit()
@@ -44,6 +64,10 @@ def pre_change_blog(blog: models.Blog, current_user: models.User):
 def update(id: int, request: schemas.Blog, db: Session, current_user: models.User):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     pre_change_blog(blog, current_user)
+    pre_unic_field(
+        {"title": request.title, "body": request.body},
+        db
+    )
     blog.update(request.dict())
     db.commit()
     return blog.first()
